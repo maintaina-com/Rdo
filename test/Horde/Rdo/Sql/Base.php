@@ -21,6 +21,18 @@ class Base extends Horde_Test_Case
     protected static $MtmaMapper;
     protected static $MtmbMapper;
 
+    public function setUp(): void
+    {
+       if (!self::$db) {
+            $this->markTestSkipped('No sqlite extension or no sqlite PDO driver.');                               
+        }
+
+       self::$LazyBaseObjectMapper = new Horde_Rdo_Test_Objects_SomeLazyBaseObjectMapper(self::$db);
+       self::$EagerBaseObjectMapper = new Horde_Rdo_Test_Objects_SomeEagerBaseObjectMapper(self::$db);
+       self::$MtmaMapper = new Horde_Rdo_Test_Objects_ManyToManyAMapper(self::$db);
+       self::$MtmbMapper = new Horde_Rdo_Test_Objects_ManyToManyBMapper(self::$db);
+    }
+
     protected static function _migrate_sql_rdo($db)
     {
         $migration = new Horde_Db_Migration_Base($db);
@@ -297,15 +309,4 @@ class Base extends Horde_Test_Case
         }
     }
 
-    public function setUp(): void
-    {
-        if (!self::$db) {
-            $this->markTestSkipped('No sqlite extension or no sqlite PDO driver.');
-        }
-
-       self::$LazyBaseObjectMapper = new Horde_Rdo_Test_Objects_SomeLazyBaseObjectMapper(self::$db);
-       self::$EagerBaseObjectMapper = new Horde_Rdo_Test_Objects_SomeEagerBaseObjectMapper(self::$db);
-       self::$MtmaMapper = new Horde_Rdo_Test_Objects_ManyToManyAMapper(self::$db);
-       self::$MtmbMapper = new Horde_Rdo_Test_Objects_ManyToManyBMapper(self::$db);
-    }
 }
