@@ -42,6 +42,8 @@ class QueryTest extends Horde_Test_Case
 
     public function testConstructor()
     {
+        $this->expectException('Horde_Db_Exception');
+
         $query = new Horde_Rdo_Query();
         $this->assertNull($query->mapper);
         $query = new Horde_Rdo_Query($this->mapper);
