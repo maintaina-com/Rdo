@@ -26,11 +26,9 @@ class QueryTest extends Horde_Test_Case
         $this->mapper = new Horde_Rdo_Test_Objects_SimpleMapper($this->db);
         $migration = new Horde_Db_Migration_Base($this->db);
         $this->expectException('Horde_Db_Exception');
-        try {
-            $migration->dropTable('horde_rdo_test');
-        } catch (Horde_Db_Exception $e) {
-            $this->markTestSkipped('No sqlite extension or no sqlite PDO driver.');                               
-        }
+        
+        $migration->dropTable('horde_rdo_test');
+        
         $t = $migration->createTable(
             'horde_rdo_test', array('autoincrementKey' => 'id')
         );
