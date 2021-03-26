@@ -9,12 +9,13 @@
  * @license    http://www.horde.org/licenses/lgpl21 LGPL 2.1
  */
 namespace Horde\Rdo;
-use Horde_Test_Case;
+use Horde_Test_Case as TestCase;
 use \Horde_Test_Factory_Db;
 use \Horde_Rdo_Test_Objects_SimpleMapper;
 use \Horde_Db_Migration_Base;
+use \Horde_Rdo_Query;
 
-class QueryTest extends Horde_Test_Case
+class QueryTest extends TestCase
 {
     protected $db;
     protected $mapper;
@@ -25,7 +26,6 @@ class QueryTest extends Horde_Test_Case
         $this->db = $factory_db->create();
         $this->mapper = new Horde_Rdo_Test_Objects_SimpleMapper($this->db);
         $migration = new Horde_Db_Migration_Base($this->db);
-        $this->expectException('Horde_Db_Exception');
         
         $migration->dropTable('horde_rdo_test');
         
@@ -40,8 +40,6 @@ class QueryTest extends Horde_Test_Case
 
     public function testConstructor()
     {
-        $this->expectException('Horde_Db_Exception');
-
         $query = new Horde_Rdo_Query();
         $this->assertNull($query->mapper);
         $query = new Horde_Rdo_Query($this->mapper);
