@@ -9,10 +9,14 @@
  * @license    http://www.horde.org/licenses/lgpl21 LGPL 2.1
  */
 namespace Horde\Rdo\Sql;
-use Horde_Test_Case;
+use Horde_Test_Case as TestCase;
 use \Horde_Db_Migration_Base;
+use \Horde_Rdo_Test_Objects_SomeLazyBaseObjectMapper;
+use \Horde_Rdo_Test_Objects_SomeEagerBaseObjectMapper;
+use \Horde_Rdo_Test_Objects_ManyToManyAMapper;
+use \Horde_Rdo_Test_Objects_ManyToManyBMapper;
 
-class Base extends Horde_Test_Case
+class Base extends TestCase
 {
     protected static $db;
     protected static $EagerBaseObjectMapper;
@@ -38,15 +42,27 @@ class Base extends Horde_Test_Case
         $migration = new Horde_Db_Migration_Base($db);
 
         /* Cleanup potential left-overs. */
+        $currentTables = $migration->tables();
         try {
-            $migration->dropTable('test_someeagerbaseobjects');
-            $migration->dropTable('test_somelazybaseobjects');
-            $migration->dropTable('test_relatedthings');
-            $migration->dropTable('test_manytomanya');
-            $migration->dropTable('test_manytomanyb');
-            $migration->dropTable('test_manythrough');
-        } catch (Horde_Db_Exception $e) {
-        }
+            if (in_array('test_someeagerbaseobjects', $currentTables)) {
+                $migration->dropTable('test_someeagerbaseobjects');
+            }
+            if (in_array('test_somelazybaseobjects', $currentTables)) {
+                $migration->dropTable('test_somelazybaseobjects');
+            }    
+            if (in_array('test_relatedthings', $currentTables)) {
+                $migration->dropTable('test_relatedthings');
+            }
+            if (in_array('test_manytomanya', $currentTables)) {
+                $migration->dropTable('test_manytomanya');
+            }
+            if (in_array('test_manytomanyb', $currentTables)) {
+                $migration->dropTable('test_manytomanyb');
+            }
+            if (in_array('test_manythrough', $currentTables)) {
+                $migration->dropTable('test_manythrough');
+            }
+        } catch (Horde_Db_Exception $e) {        }
 
         $t = $migration->createTable('test_someeagerbaseobjects', array('autoincrementKey' => 'baseobject_id'));
         $t->column('relatedthing_id', 'integer');
@@ -218,21 +234,19 @@ class Base extends Horde_Test_Case
         $this->assertTrue($list[0] instanceof Horde_Rdo_Test_Objects_SomeLazyBaseObject, "return Object for first index in list");
     }
 
-   /**
-    * @expectedException Horde_Rdo_Exception
-    */
     public function testListOffsetSetThrowException()
-    {
+    {   
+        $this->expectException('Horde_Rdo_Exception');
+
         $list = self::$LazyBaseObjectMapper->find();
         $list[0] = $list[0];
         $this->assertTrue($list[0] instanceof Horde_Rdo_Test_Objects_SomeLazyBaseObject, "Throw exception when trying to set a new element to the list");
     }
 
-   /**
-    * @expectedException Horde_Rdo_Exception
-    */
     public function testListOffsetUnsetThrowException()
     {
+        $this->expectException('Horde_Rdo_Exception');
+
         $list = self::$LazyBaseObjectMapper->find();
         unset($list[0]);
         $this->assertTrue($list[0] instanceof Horde_Rdo_Test_Objects_SomeLazyBaseObject, "Throw exception when trying to unset an element");
@@ -266,11 +280,11 @@ class Base extends Horde_Test_Case
         $result = self::$LazyBaseObjectMapper->findOne(1);
         $this->assertEquals(100, $result->lazyRelatedThing->relatedthing_intproperty, "to-one-relations return correct related object when key is found");
     }
-   /**
-    * @expectedException Horde_Rdo_Exception
-    */
+
     public function testLazyToOneRelationThrowsExceptionWhenKeyIsNotFound()
     {
+        $this->expectException('Horde_Rdo_Exception');
+
         $entity = self::$LazyBaseObjectMapper->findOne(3);
         $this->assertNull($entity->lazyRelatedThing, "lazy to-one-relations throw exception when relation key is not found");
     }

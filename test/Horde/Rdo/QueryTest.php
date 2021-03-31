@@ -27,8 +27,11 @@ class QueryTest extends TestCase
         $this->mapper = new Horde_Rdo_Test_Objects_SimpleMapper($this->db);
         $migration = new Horde_Db_Migration_Base($this->db);
         
-        $migration->dropTable('horde_rdo_test');
-        
+        $currentTables = $migration->tables();
+        if (in_array('horde_rdo_test', $currentTables)) {
+            $migration->dropTable('horde_rdo_test');
+        }
+
         $t = $migration->createTable(
             'horde_rdo_test', array('autoincrementKey' => 'id')
         );
