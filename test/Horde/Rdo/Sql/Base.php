@@ -8,7 +8,11 @@
  * @subpackage UnitTests
  * @license    http://www.horde.org/licenses/lgpl21 LGPL 2.1
  */
-class Horde_Rdo_Test_Sql_Base extends Horde_Test_Case
+namespace Horde\Rdo\Sql;
+use Horde_Test_Case;
+use \Horde_Db_Migration_Base;
+
+class Base extends Horde_Test_Case
 {
     protected static $db;
     protected static $EagerBaseObjectMapper;
@@ -16,6 +20,18 @@ class Horde_Rdo_Test_Sql_Base extends Horde_Test_Case
     protected static $RelatedThingMapper;
     protected static $MtmaMapper;
     protected static $MtmbMapper;
+
+    public function setUp(): void
+    {
+       if (!self::$db) {
+            $this->markTestSkipped('No sqlite extension or no sqlite PDO driver.');                               
+        }
+
+       self::$LazyBaseObjectMapper = new Horde_Rdo_Test_Objects_SomeLazyBaseObjectMapper(self::$db);
+       self::$EagerBaseObjectMapper = new Horde_Rdo_Test_Objects_SomeEagerBaseObjectMapper(self::$db);
+       self::$MtmaMapper = new Horde_Rdo_Test_Objects_ManyToManyAMapper(self::$db);
+       self::$MtmbMapper = new Horde_Rdo_Test_Objects_ManyToManyBMapper(self::$db);
+    }
 
     protected static function _migrate_sql_rdo($db)
     {
@@ -65,7 +81,7 @@ class Horde_Rdo_Test_Sql_Base extends Horde_Test_Case
     }
 
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         self::_migrate_sql_rdo(self::$db);
         // read sql file for statements
@@ -278,7 +294,7 @@ class Horde_Rdo_Test_Sql_Base extends Horde_Test_Case
     }
 
 
-    public static function tearDownAfterClass()
+    public static function tearDownAfterClass(): void
     {
         if (self::$db) {
             $migration = new Horde_Db_Migration_Base(self::$db);
@@ -293,15 +309,4 @@ class Horde_Rdo_Test_Sql_Base extends Horde_Test_Case
         }
     }
 
-    public function setUp()
-    {
-        if (!self::$db) {
-            $this->markTestSkipped('No sqlite extension or no sqlite PDO driver.');
-        }
-
-       self::$LazyBaseObjectMapper = new Horde_Rdo_Test_Objects_SomeLazyBaseObjectMapper(self::$db);
-       self::$EagerBaseObjectMapper = new Horde_Rdo_Test_Objects_SomeEagerBaseObjectMapper(self::$db);
-       self::$MtmaMapper = new Horde_Rdo_Test_Objects_ManyToManyAMapper(self::$db);
-       self::$MtmbMapper = new Horde_Rdo_Test_Objects_ManyToManyBMapper(self::$db);
-    }
 }
