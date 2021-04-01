@@ -11,10 +11,16 @@
 namespace Horde\Rdo\Sql;
 use Horde_Test_Case as TestCase;
 use \Horde_Db_Migration_Base;
-use \Horde_Rdo_Test_Objects_SomeLazyBaseObjectMapper;
-use \Horde_Rdo_Test_Objects_SomeEagerBaseObjectMapper;
-use \Horde_Rdo_Test_Objects_ManyToManyAMapper;
-use \Horde_Rdo_Test_Objects_ManyToManyBMapper;
+use Horde_Rdo;
+use Horde_Rdo_List;
+use Horde_Rdo_Base;
+use Horde\Rdo\Objects\{SomeLazyBaseObjectMapper,
+                        SomeEagerBaseObjectMapper,
+                        ManyToManyAMapper,
+                        ManyToManyBMapper,
+                        RelatedThingMapper,
+                        SomeLazyBaseObject,
+                        RelatedThing};
 
 class Base extends TestCase
 {
@@ -31,10 +37,10 @@ class Base extends TestCase
             $this->markTestSkipped('No sqlite extension or no sqlite PDO driver.');                               
         }
 
-       self::$LazyBaseObjectMapper = new Horde_Rdo_Test_Objects_SomeLazyBaseObjectMapper(self::$db);
-       self::$EagerBaseObjectMapper = new Horde_Rdo_Test_Objects_SomeEagerBaseObjectMapper(self::$db);
-       self::$MtmaMapper = new Horde_Rdo_Test_Objects_ManyToManyAMapper(self::$db);
-       self::$MtmbMapper = new Horde_Rdo_Test_Objects_ManyToManyBMapper(self::$db);
+       self::$LazyBaseObjectMapper = new SomeLazyBaseObjectMapper(self::$db);
+       self::$EagerBaseObjectMapper = new SomeEagerBaseObjectMapper(self::$db);
+       self::$MtmaMapper = new ManyToManyAMapper(self::$db);
+       self::$MtmbMapper = new ManyToManyBMapper(self::$db);
     }
 
     protected static function _migrate_sql_rdo($db)
@@ -225,13 +231,13 @@ class Base extends TestCase
     public function testListOffsetGetReturnObjectForLast()
     {
         $list = self::$LazyBaseObjectMapper->find();
-        $this->assertTrue($list[$list->count()-1] instanceof Horde_Rdo_Test_Objects_SomeLazyBaseObject, "return Object for last index in list");
+        $this->assertTrue($list[$list->count()-1] instanceof SomeLazyBaseObject, "return Object for last index in list");
     }
 
     public function testListOffsetGetReturnObjectForFirst()
     {
         $list = self::$LazyBaseObjectMapper->find();
-        $this->assertTrue($list[0] instanceof Horde_Rdo_Test_Objects_SomeLazyBaseObject, "return Object for first index in list");
+        $this->assertTrue($list[0] instanceof SomeLazyBaseObject, "return Object for first index in list");
     }
 
     public function testListOffsetSetThrowException()
@@ -240,7 +246,7 @@ class Base extends TestCase
 
         $list = self::$LazyBaseObjectMapper->find();
         $list[0] = $list[0];
-        $this->assertTrue($list[0] instanceof Horde_Rdo_Test_Objects_SomeLazyBaseObject, "Throw exception when trying to set a new element to the list");
+        $this->assertTrue($list[0] instanceof SomeLazyBaseObject, "Throw exception when trying to set a new element to the list");
     }
 
     public function testListOffsetUnsetThrowException()
@@ -272,7 +278,7 @@ class Base extends TestCase
     public function testToOneRelationRetrievesEntityWhenKeyIsFound()
     {
         $entity = self::$LazyBaseObjectMapper->findOne(1);
-        $this->assertTrue($entity->lazyRelatedThing instanceof Horde_Rdo_Test_Objects_RelatedThing, "to-one-relations return an instance object");
+        $this->assertTrue($entity->lazyRelatedThing instanceof RelatedThing, "to-one-relations return an instance object");
     }
 
     public function testToOneRelationRetrievesCorrectEntityWhenKeyIsFound()
