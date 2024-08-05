@@ -11,7 +11,7 @@
   <email>chuck@horde.org</email>
   <active>no</active>
  </lead>
- <date>2022-11-04</date>
+ <date>2024-08-05</date>
  <version>
   <release>3.0.0alpha6</release>
   <api>3.0.0alpha1</api>
@@ -22,7 +22,7 @@
  </stability>
  <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1-only</license>
  <notes>
-* 
+* |+
  </notes>
  <contents>
   <dir baseinstalldir="/" name="/">
@@ -30,6 +30,7 @@
     <dir name="workflows">
      <file name="ci.yml" role="php" />
      <file name="phpdoc.yml" role="php" />
+     <file name="release.yml" role="php" />
      <file name="update-satis.yml" role="php" />
     </dir> <!-- /.github/workflows -->
    </dir> <!-- /.github -->
@@ -145,6 +146,7 @@
   <filelist>
    <install as="workflows/ci.yml" name=".github/workflows/ci.yml" />
    <install as="workflows/phpdoc.yml" name=".github/workflows/phpdoc.yml" />
+   <install as="workflows/release.yml" name=".github/workflows/release.yml" />
    <install as="workflows/update-satis.yml" name=".github/workflows/update-satis.yml" />
    <install as="CHANGES" name="doc/Horde/Rdo/CHANGES" />
    <install as="examples/clotho.data.php" name="doc/Horde/Rdo/examples/clotho.data.php" />
@@ -211,28 +213,6 @@
   </filelist>
  </phprelease>
  <changelog>
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
   <release>
    <version>
     <release>0.3.0</release>
@@ -576,9 +556,9 @@
     <api>alpha</api>
    </stability>
    <date>2022-11-04</date>
-   <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1</license>
+   <license uri="http://www.horde.org/licenses/lgpl21">LGPL-2.1-only</license>
    <notes>
-* 
+* |+
    </notes>
   </release>
  </changelog>
